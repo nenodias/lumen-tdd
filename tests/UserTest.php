@@ -15,7 +15,7 @@ class UserTest extends TestCase
     {
         $dados = [
             'name' => 'Nome 02'.date('Ymdis').' '.rand(1, 100),
-            'email' => 'email@exemplo.com',
+            'email' => 'email2'.date('Ymdis').' '.rand(1, 100).'@exemplo.com',
             'password' => '123',
             'password_confirmation' => '123'
         ];
@@ -71,7 +71,7 @@ class UserTest extends TestCase
         $user = \App\User::first();
         $dados = [
             'name' => 'Nome 02'.date('Ymdis').' '.rand(1, 100),
-            'email' => 'email2'.date('Ymdis').' '.rand(1, 100).'@exemplo.com'
+            'email' => 'email2'.date('Ymdis').' '.rand(1, 100).'@exemplo.com',
         ];
         $this->put('/api/user/'.$user->id, $dados);
         $this->assertResponseOk();
