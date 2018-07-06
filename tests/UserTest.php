@@ -14,17 +14,22 @@ class UserTest extends TestCase
     public function testCreateUser()
     {
         $dados = [
-            'name' => 'Nome 01',
+            'name' => 'Nome 02'.date('Ymdis').' '.rand(1, 100),
             'email' => 'email@exemplo.com',
             'password' => '123'
         ];
         $this->post('/api/user/', $dados);
         $this->assertResponseOk();
-
+        
         $resposta = (array) json_decode($this->response->content());
         $this->assertArrayHasKey('name', $resposta);
         $this->assertArrayHasKey('email', $resposta);
         $this->assertArrayHasKey('id', $resposta);
+
+        $this->seeInDatabase('users',[
+            'name'=> $dados['name'],
+            'email'=> $dados['email']
+        ]);
     }
 
     public function testViewUser()
@@ -37,5 +42,29 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('name', $resposta);
         $this->assertArrayHasKey('email', $resposta);
         $this->assertArrayHasKey('id', $resposta);
+    }
+
+    public function testUpdateUser()
+    {
+        $user = \App\User::first();
+        $dados = [
+            'name' => 'Nome 02'.date('Ymdis').' '.rand(1, 100),
+            'email' => 'email2'.date('Ymdis').' '.rand(1, 100).'@exemplo.com',
+            'password' => '123'
+        ];
+        $this->put('/api/user/'.$user->id, $dados);
+        $this->assertResponseOk();
+
+        $resposta = (array) json_decode($this->response->content());
+
+        $this->assertArrayHasKey('name', $resposta);
+        $this->assertArrayHasKey('email', $resposta);
+        $this->assertArrayHasKey('id', $resposta);
+
+        $this->notSeeInDatabase('users',[
+            'name'=> $user->name,
+            'email'=> $user->email,
+            'id'=> $user->id
+        ]);
     }
 }
