@@ -37,8 +37,9 @@ class UserController extends Controller
             'name'=>'required|max:255',
             'email'=>'required|unique:users|max:255'
         ];
+        $atualizarPassword = isset($request->all()['password']);
 
-        if(isset($request->all()['password'])){
+        if($atualizarPassword){
             $dadosValidacao['password'] = 'required|confirmed|max:255';
         }
 
@@ -46,7 +47,9 @@ class UserController extends Controller
         $user = User::find($id);
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->password = $request->input('password');
+        if($atualizarPassword){
+            $user->password = $request->input('password');
+        }
         $user->update();
         return $user;
     }
