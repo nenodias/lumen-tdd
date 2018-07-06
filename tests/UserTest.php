@@ -5,6 +5,7 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class UserTest extends TestCase
 {
+    use DatabaseTransactions;//Faz rollback do teste
     /**
      * A basic test example.
      *
@@ -17,7 +18,19 @@ class UserTest extends TestCase
             'email' => 'email@exemplo.com',
             'password' => '123'
         ];
-        $this->post('/api/user', $dados);
+        $this->post('/api/user/', $dados);
+        $this->assertResponseOk();
+
+        $resposta = (array) json_decode($this->response->content());
+        $this->assertArrayHasKey('name', $resposta);
+        $this->assertArrayHasKey('email', $resposta);
+        $this->assertArrayHasKey('id', $resposta);
+    }
+
+    public function testViewUser()
+    {
+        $user = \App\User::first();
+        $this->get('/api/user/'.$user->id);
         $this->assertResponseOk();
 
         $resposta = (array) json_decode($this->response->content());
