@@ -20,3 +20,4 @@ $router->get('/api/user/{id}', 'UserController@view');
 $router->post('/api/user/', 'UserController@store');
 $router->put('/api/user/{id}', 'UserController@update');
 $router->delete('/api/user/{id}', 'UserController@delete');
+$router->post('/api/login', 'UserController@login');

@@ -27,8 +27,20 @@ class UserController extends Controller
             'password'=>'required|confirmed|max:255'
         ]);
         $user = new User($request->all());
+        $user->api_token = str_random(60);
         $user->save();
         return $user;
+    }
+
+    public function login(Request $request)
+    {
+        $dados = $request->only('email','password');
+        $user = User::where('email', $dados['email'])
+        ->where('password', $dados['password'])
+        ->first();
+        $user->api_token = str_random(60);
+        $user->update();
+        return ['api_token'=>$user->api_token];
     }
 
     public function update(Request $request, $id)
